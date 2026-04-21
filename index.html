@@ -4,377 +4,483 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>Vybing</title>
-<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Nunito:wght@400;700;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Nunito:wght@400;700;800;900&display=swap" rel="stylesheet">
 <style>
-  * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+* { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
 
-  :root {
-    --purple: #7B2FFF;
-    --purple-light: #A96EFF;
-    --purple-soft: #C8A8FF;
-    --dark: #0a0a0f;
-    --nav-bg: #1a0a3a;
-    --nav-h: 75px;
-  }
+:root {
+  --purple:       #7B2FFF;
+  --purple-mid:   #9B5FFF;
+  --purple-light: #C8A8FF;
+  --purple-dim:   rgba(180,140,255,0.18);
+  --nav-bg:       #1a0535;
+  --nav-h:        90px;
+  --dark:         #080810;
+}
 
-  html, body {
-    width: 100%; height: 100%;
-    background: var(--dark);
-    font-family: 'Nunito', sans-serif;
-    overflow: hidden;
-  }
+html, body {
+  width:100%; height:100%;
+  background: var(--dark);
+  font-family: 'Nunito', sans-serif;
+  overflow: hidden;
+}
 
-  /* ── FULL SCREEN APP (no phone shell) ── */
-  .app {
-    width: 100vw;
-    height: 100vh;
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    background: #0d0d18;
-  }
+.app {
+  width: 100vw;
+  height: 100vh;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  background: var(--dark);
+}
 
-  /* ── MAP fills everything above nav ── */
-  #map {
-    flex: 1;
-    width: 100%;
-    min-height: 0;
-    z-index: 1;
-  }
+/* ── MAP ── */
+#map {
+  flex: 1;
+  width: 100%;
+  min-height: 0;
+  z-index: 1;
+}
 
-  /* ── SEARCH BAR ── */
-  .search-bar {
-    position: absolute;
-    top: 18px; left: 16px; right: 16px;
-    z-index: 50;
-    display: flex; align-items: center; gap: 10px;
-  }
-  .search-wrapper { flex: 1; position: relative; }
-  .search-icon {
-    position: absolute; left: 14px; top: 50%;
-    transform: translateY(-50%);
-    font-size: 15px; pointer-events: none;
-  }
-  .search-input {
-    width: 100%;
-    background: rgba(20,10,45,0.92);
-    border: 1.5px solid rgba(200,168,255,0.4);
-    border-radius: 30px;
-    padding: 13px 18px 13px 40px;
-    color: #e0d0ff;
-    font-family: 'Nunito', sans-serif;
-    font-size: 15px; font-weight: 600;
-    outline: none; backdrop-filter: blur(12px);
-  }
-  .search-input::placeholder { color: rgba(200,168,255,0.55); }
-  .filter-btn {
-    width: 46px; height: 46px;
-    background: rgba(20,10,45,0.92);
-    border: 1.5px solid rgba(200,168,255,0.4);
-    border-radius: 50%;
-    display: flex; align-items: center; justify-content: center;
-    cursor: pointer; backdrop-filter: blur(12px); flex-shrink: 0;
-  }
+/* ── SEARCH BAR ── */
+.search-bar {
+  position: absolute;
+  top: 18px; left: 14px; right: 14px;
+  z-index: 50;
+  display: flex; align-items: center; gap: 10px;
+}
+.search-wrapper {
+  flex: 1; position: relative;
+}
+.search-input {
+  width: 100%;
+  background: rgba(195,165,255,0.22);
+  border: 2px solid rgba(195,165,255,0.5);
+  border-radius: 32px;
+  padding: 13px 48px 13px 44px;
+  color: #e8d8ff;
+  font-family: 'Nunito', sans-serif;
+  font-size: 16px; font-weight: 700;
+  outline: none;
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+}
+.search-input::placeholder { color: rgba(210,185,255,0.7); }
+.search-icon-left {
+  position: absolute; left: 15px; top: 50%;
+  transform: translateY(-50%);
+  pointer-events: none;
+}
+.search-icon-left svg { width:20px; height:20px; }
+.filter-btn {
+  width: 48px; height: 48px;
+  background: rgba(195,165,255,0.22);
+  border: 2px solid rgba(195,165,255,0.5);
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer;
+  backdrop-filter: blur(16px);
+  flex-shrink: 0;
+}
 
-  /* ── LOCATION TOGGLE ── */
-  .location-toggle {
-    position: absolute;
-    top: 76px; right: 16px;
-    z-index: 50;
-    background: rgba(20,10,40,0.92);
-    border: 1.5px solid var(--purple);
-    border-radius: 20px; padding: 7px 14px;
-    display: flex; align-items: center; gap: 6px;
-    font-size: 13px; font-weight: 800; color: #90EE90;
-    backdrop-filter: blur(10px); cursor: pointer; user-select: none;
-  }
-  .toggle-dot {
-    width: 8px; height: 8px; background: #90EE90;
-    border-radius: 50%; animation: blink 1.5s infinite;
-  }
-  @keyframes blink {
-    0%,100% { opacity:1; transform:scale(1); }
-    50% { opacity:0.4; transform:scale(0.75); }
-  }
+/* Search autocomplete dropdown */
+.pac-container {
+  background: rgba(20,5,50,0.97) !important;
+  border: 1.5px solid var(--purple) !important;
+  border-radius: 16px !important;
+  margin-top: 6px !important;
+  font-family: 'Nunito', sans-serif !important;
+  backdrop-filter: blur(20px) !important;
+  box-shadow: 0 8px 32px rgba(123,47,255,0.4) !important;
+  overflow: hidden !important;
+}
+.pac-item {
+  background: transparent !important;
+  color: #c8a8ff !important;
+  border-top: 1px solid rgba(123,47,255,0.2) !important;
+  padding: 10px 16px !important;
+  font-size: 14px !important;
+  cursor: pointer !important;
+}
+.pac-item:hover, .pac-item-selected {
+  background: rgba(123,47,255,0.25) !important;
+}
+.pac-item-query { color: #fff !important; font-weight: 800 !important; }
+.pac-icon { display:none !important; }
+.pac-matched { color: var(--purple-light) !important; }
 
-  /* ── VENUE CARD ── */
-  .venue-card {
-    position: absolute;
-    bottom: calc(var(--nav-h) + 16px); left: 16px;
-    z-index: 50;
-    background: rgba(22,8,50,0.95);
-    border: 1.5px solid var(--purple);
-    border-radius: 20px; padding: 12px 18px;
-    backdrop-filter: blur(14px);
-    box-shadow: 0 0 22px rgba(123,47,255,0.35);
-    max-width: 240px;
-    animation: slideUp 0.5s cubic-bezier(0.34,1.56,0.64,1);
-  }
-  @keyframes slideUp {
-    from { transform: translateY(20px); opacity: 0; }
-    to   { transform: translateY(0);    opacity: 1; }
-  }
-  .venue-label {
-    font-size: 10px; font-weight: 700;
-    color: var(--purple-soft); letter-spacing: 1.5px; text-transform: uppercase;
-  }
-  .venue-label span { color: #fff; font-style: italic; font-weight: 900; }
-  .venue-name {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 28px; letter-spacing: 1px; line-height: 1.05; margin-top: 2px;
-    background: linear-gradient(90deg, #fff, #c8a8ff);
-    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-  }
+/* ── LOCATION TOGGLE ── */
+.location-toggle {
+  position: absolute;
+  top: 80px; right: 14px;
+  z-index: 50;
+  background: rgba(15,5,35,0.92);
+  border: 2px solid rgba(195,165,255,0.4);
+  border-radius: 24px;
+  padding: 7px 14px 7px 10px;
+  display: flex; align-items: center; gap: 7px;
+  font-size: 14px; font-weight: 800;
+  color: #7fff7f;
+  backdrop-filter: blur(14px);
+  cursor: pointer; user-select: none;
+}
+.toggle-dot {
+  width: 9px; height: 9px;
+  background: #7fff7f; border-radius: 50%;
+  animation: blink 1.6s infinite;
+}
+@keyframes blink {
+  0%,100%{opacity:1;transform:scale(1);}
+  50%{opacity:0.35;transform:scale(0.7);}
+}
 
-  /* ── ACTION BUTTONS ── */
-  .action-btns {
-    position: absolute;
-    bottom: calc(var(--nav-h) + 16px); right: 16px;
-    z-index: 50;
-    display: flex; flex-direction: column; gap: 10px; align-items: center;
-  }
-  .action-btn {
-    width: 58px; height: 58px; border-radius: 50%; border: none;
-    display: flex; align-items: center; justify-content: center;
-    cursor: pointer; transition: transform 0.15s;
-    box-shadow: 0 4px 18px rgba(0,0,0,0.5);
-  }
-  .action-btn:active { transform: scale(0.88); }
-  .btn-v {
-    background: var(--purple); color: white;
-    font-family: 'Bebas Neue', sans-serif; font-size: 30px; position: relative;
-  }
-  .btn-v::after {
-    content: '+'; position: absolute; top: 7px; right: 9px;
-    font-size: 13px; font-weight: 900; font-family: 'Nunito', sans-serif;
-  }
-  .btn-send {
-    width: 50px; height: 50px;
-    background: rgba(123,47,255,0.6);
-    border: 1.5px solid var(--purple) !important;
-  }
+/* ── MUSIC NOTES ── */
+.music-notes {
+  position: absolute;
+  bottom: calc(var(--nav-h) + 130px);
+  left: 50%; transform: translateX(-30%);
+  font-size: 26px;
+  opacity: 0.55;
+  z-index: 20;
+  animation: floatUp 3s ease-in-out infinite;
+  pointer-events: none;
+}
+@keyframes floatUp {
+  0%,100%{transform:translateX(-30%) translateY(0);}
+  50%{transform:translateX(-30%) translateY(-10px);}
+}
 
-  /* ── BOTTOM NAV ── */
-  .bottom-nav {
-    width: 100%;
-    height: var(--nav-h);
-    background: var(--nav-bg);
-    border-top: 1.5px solid rgba(123,47,255,0.4);
-    display: flex;
-    flex-shrink: 0;
-    z-index: 60;
-  }
+/* ── VENUE CARD ── */
+.venue-card {
+  position: absolute;
+  bottom: calc(var(--nav-h) + 14px);
+  left: 14px;
+  z-index: 50;
+  background: rgba(18,6,42,0.93);
+  border: 2px solid rgba(160,100,255,0.55);
+  border-radius: 22px;
+  padding: 13px 20px;
+  backdrop-filter: blur(16px);
+  box-shadow: 0 0 28px rgba(123,47,255,0.3);
+  max-width: 230px;
+  animation: slideUp 0.5s cubic-bezier(0.34,1.56,0.64,1);
+}
+@keyframes slideUp {
+  from{transform:translateY(18px);opacity:0;}
+  to{transform:translateY(0);opacity:1;}
+}
+.venue-label {
+  font-size: 10px; font-weight: 800;
+  color: var(--purple-light);
+  letter-spacing: 1.8px; text-transform: uppercase;
+  font-style: italic;
+}
+.venue-label .vybing-word {
+  color: #fff; font-weight: 900; font-style: italic;
+  text-decoration: underline;
+  text-decoration-color: rgba(200,168,255,0.4);
+}
+.venue-name {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 30px; letter-spacing: 1.5px; line-height: 1.05;
+  margin-top: 3px;
+  background: linear-gradient(90deg, #fff 40%, #c8a8ff 100%);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+}
 
-  .nav-item {
-    flex: 1;
-    display: flex; flex-direction: column;
-    align-items: center; justify-content: center;
-    gap: 5px; cursor: pointer;
-    transition: background 0.2s; position: relative;
-    padding: 8px 0;
-  }
-  .nav-item.active { background: var(--purple); }
-  .nav-item.active::before {
-    content: ''; position: absolute; top: 0; left: 0; right: 0;
-    height: 2px; background: var(--purple-soft);
-  }
-  .nav-item:not(.active):active { background: rgba(123,47,255,0.25); }
+/* ── ACTION BUTTONS ── */
+.action-btns {
+  position: absolute;
+  bottom: calc(var(--nav-h) + 10px);
+  right: 14px;
+  z-index: 50;
+  display: flex; flex-direction: column;
+  gap: 10px; align-items: center;
+}
 
-  .nav-icon { font-size: 24px; line-height: 1; }
-  .nav-label {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 13px; color: #fff; letter-spacing: 1px;
-  }
+/* Big V teardrop button */
+.btn-v {
+  width: 72px; height: 72px;
+  background: var(--purple);
+  border: none; cursor: pointer;
+  border-radius: 50% 50% 50% 0;
+  transform: rotate(-45deg);
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 6px 24px rgba(123,47,255,0.6);
+  transition: transform 0.15s, box-shadow 0.15s;
+  position: relative;
+}
+.btn-v:active { box-shadow: 0 2px 10px rgba(123,47,255,0.4); }
+.btn-v-inner {
+  transform: rotate(45deg);
+  display: flex; align-items: center; justify-content: center;
+  position: relative;
+}
+.btn-v-inner .v-letter {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 32px; color: white; letter-spacing: -1px;
+  line-height: 1;
+}
+.btn-v-inner .v-plus {
+  position: absolute; top: -6px; right: -10px;
+  font-size: 16px; font-weight: 900; color: white;
+  font-family: 'Nunito', sans-serif;
+}
 
-  .nav-divider {
-    width: 1px; background: rgba(123,47,255,0.3);
-    align-self: stretch; margin: 12px 0;
-  }
+/* Send button - speech bubble arrow */
+.btn-send {
+  width: 52px; height: 52px;
+  background: rgba(123,47,255,0.55);
+  border: 2px solid rgba(195,165,255,0.4);
+  border-radius: 50% 50% 50% 0;
+  transform: rotate(-45deg);
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.4);
+  transition: transform 0.15s;
+}
+.btn-send:active { opacity: 0.7; }
+.btn-send svg { transform: rotate(45deg); }
 
-  /* ── SCREENS (DISCOVER / VYBERZ / PROFILE) ── */
-  .screen {
-    display: none;
-    position: absolute;
-    top: 0; left: 0; right: 0;
-    bottom: var(--nav-h);
-    background: var(--dark);
-    z-index: 40;
-    overflow-y: auto;
-    padding: 24px 16px 16px;
-    flex-direction: column;
-    gap: 16px;
-  }
-  .screen.active { display: flex; }
+/* ── BOTTOM NAV ── */
+.bottom-nav {
+  width: 100%;
+  height: var(--nav-h);
+  background: var(--nav-bg);
+  border-top: 1.5px solid rgba(123,47,255,0.3);
+  display: flex;
+  flex-shrink: 0;
+  z-index: 60;
+  position: relative;
+}
 
-  .screen-title {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 36px; letter-spacing: 2px;
-    background: linear-gradient(90deg, #fff, var(--purple-soft));
-    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-    margin-top: 8px;
-  }
+.nav-item {
+  flex: 1;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  gap: 4px; cursor: pointer;
+  position: relative;
+  transition: background 0.2s;
+  padding: 8px 0 12px;
+  border-right: 1.5px solid rgba(123,47,255,0.25);
+}
+.nav-item:last-child { border-right: none; }
 
-  /* DISCOVER cards */
-  .venue-row {
-    background: rgba(30,10,60,0.8);
-    border: 1.5px solid rgba(123,47,255,0.3);
-    border-radius: 16px; padding: 14px 16px;
-    display: flex; align-items: center; gap: 14px;
-    cursor: pointer; transition: border-color 0.2s;
-  }
-  .venue-row:active { border-color: var(--purple); }
-  .venue-row-icon {
-    width: 52px; height: 52px; border-radius: 50%;
-    background: var(--purple);
-    display: flex; align-items: center; justify-content: center;
-    font-size: 26px; flex-shrink: 0;
-  }
-  .venue-row-info { flex: 1; }
-  .venue-row-name {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 20px; color: #fff; letter-spacing: 1px;
-  }
-  .venue-row-sub { font-size: 12px; color: var(--purple-soft); font-weight: 600; margin-top: 2px; }
-  .venue-row-count {
-    background: #ff3a3a; color: white;
-    font-size: 12px; font-weight: 900;
-    padding: 4px 10px; border-radius: 20px;
-  }
+/* MAP tab — lighter outline style (inactive look from screenshot) */
+.nav-item.nav-map {
+  background: transparent;
+}
+.nav-item.nav-map.active {
+  background: rgba(123,47,255,0.15);
+}
 
-  /* VYBERZ list */
-  .user-row {
-    background: rgba(30,10,60,0.8);
-    border: 1.5px solid rgba(123,47,255,0.3);
-    border-radius: 16px; padding: 12px 16px;
-    display: flex; align-items: center; gap: 14px;
-    cursor: pointer; transition: border-color 0.2s;
-  }
-  .user-row:active { border-color: var(--purple); }
-  .user-avatar {
-    width: 48px; height: 48px; border-radius: 50%;
-    background: linear-gradient(135deg, var(--purple), var(--purple-light));
-    display: flex; align-items: center; justify-content: center;
-    font-size: 22px; flex-shrink: 0;
-    border: 2px solid rgba(200,168,255,0.3);
-  }
-  .user-info { flex: 1; }
-  .user-name { font-weight: 900; color: #fff; font-size: 15px; }
-  .user-dist { font-size: 12px; color: var(--purple-soft); font-weight: 600; margin-top: 2px; }
-  .user-vibe {
-    font-size: 11px; color: rgba(200,168,255,0.6);
-    font-weight: 700; margin-top: 2px;
-  }
-  .vyb-btn {
-    background: var(--purple); color: white; border: none;
-    border-radius: 20px; padding: 7px 16px;
-    font-family: 'Nunito', sans-serif; font-size: 13px; font-weight: 800;
-    cursor: pointer;
-  }
+/* Other tabs — solid purple when active */
+.nav-item.active {
+  background: var(--purple);
+}
+.nav-item.active::before {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0;
+  height: 2.5px;
+  background: var(--purple-light);
+}
 
-  /* PROFILE */
-  .profile-header {
-    display: flex; flex-direction: column; align-items: center;
-    gap: 12px; padding: 20px 0;
-  }
-  .profile-avatar {
-    width: 90px; height: 90px; border-radius: 50%;
-    background: linear-gradient(135deg, var(--purple), var(--purple-light));
-    display: flex; align-items: center; justify-content: center;
-    font-size: 42px;
-    border: 3px solid var(--purple-soft);
-    box-shadow: 0 0 30px rgba(123,47,255,0.5);
-  }
-  .profile-name {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 32px; color: #fff; letter-spacing: 2px;
-  }
-  .profile-handle { color: var(--purple-soft); font-size: 14px; font-weight: 700; }
-  .profile-stats {
-    display: flex; gap: 0;
-    background: rgba(30,10,60,0.8);
-    border: 1.5px solid rgba(123,47,255,0.3);
-    border-radius: 16px; overflow: hidden;
-  }
-  .stat {
-    flex: 1; padding: 14px 0; text-align: center;
-    border-right: 1px solid rgba(123,47,255,0.2);
-  }
-  .stat:last-child { border-right: none; }
-  .stat-val {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 26px; color: #fff;
-  }
-  .stat-lbl { font-size: 11px; color: var(--purple-soft); font-weight: 700; letter-spacing: 1px; }
-  .profile-section-title {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 20px; color: var(--purple-soft); letter-spacing: 2px; margin-top: 8px;
-  }
-  .vibe-tag {
-    display: inline-block;
-    background: rgba(123,47,255,0.25);
-    border: 1px solid rgba(123,47,255,0.5);
-    border-radius: 20px; padding: 6px 14px;
-    font-size: 13px; font-weight: 700; color: var(--purple-soft);
-    margin: 4px;
-  }
-  .vibe-tags { flex-wrap: wrap; display: flex; }
+.nav-icon-wrap {
+  width: 36px; height: 36px;
+  display: flex; align-items: center; justify-content: center;
+}
 
-  /* ── LOADING ── */
-  #loading {
-    position: absolute; inset: 0; background: #0d0d18;
-    display: flex; flex-direction: column;
-    align-items: center; justify-content: center;
-    z-index: 300; gap: 16px; transition: opacity 0.6s;
-  }
-  #loading.hidden { opacity: 0; pointer-events: none; }
-  .loader-logo {
-    font-family: 'Bebas Neue', sans-serif; font-size: 58px;
-    background: linear-gradient(135deg, var(--purple), var(--purple-soft));
-    -webkit-background-clip: text; -webkit-text-fill-color: transparent; letter-spacing: 4px;
-  }
-  .loader-sub {
-    color: var(--purple-soft); font-size: 13px; font-weight: 700;
-    letter-spacing: 2px; text-transform: uppercase; opacity: 0.7;
-  }
-  .loader-spinner {
-    width: 38px; height: 38px;
-    border: 3px solid rgba(123,47,255,0.2);
-    border-top-color: var(--purple); border-radius: 50%;
-    animation: spin 0.8s linear infinite;
-  }
-  @keyframes spin { to { transform: rotate(360deg); } }
+.nav-label {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 15px; color: #fff; letter-spacing: 1.5px;
+}
 
-  /* ── ERROR ── */
-  #errorPanel {
-    display: none; position: absolute; inset: 0;
-    background: #0d0d18;
-    flex-direction: column; align-items: center; justify-content: center;
-    z-index: 400; gap: 14px; padding: 32px; text-align: center;
-  }
-  #errorPanel.show { display: flex; }
-  .err-icon { font-size: 48px; }
-  .err-title { font-family:'Bebas Neue',sans-serif; font-size:28px; color:#ff6b6b; letter-spacing:2px; }
-  .err-msg { color:var(--purple-soft); font-size:13px; font-weight:600; line-height:1.6; max-width:320px; }
-  .err-code { background:rgba(255,107,107,0.1); border:1px solid rgba(255,107,107,0.3); border-radius:10px; padding:10px 16px; color:#ff9999; font-size:12px; font-family:monospace; max-width:320px; word-break:break-all; }
-  .err-btn { background:var(--purple); color:white; border:none; border-radius:20px; padding:10px 24px; font-family:'Nunito',sans-serif; font-size:14px; font-weight:800; cursor:pointer; margin-top:4px; }
+/* MAP icon — dotted circle with pin */
+.map-icon-svg { width:34px; height:34px; }
 
-  /* ── TOAST ── */
-  .toast {
-    position: fixed; bottom: calc(var(--nav-h) + 20px); left: 50%;
-    transform: translateX(-50%);
-    background: rgba(22,8,50,0.97);
-    border: 1.5px solid var(--purple);
-    border-radius: 16px; padding: 12px 22px;
-    color: white; font-size: 14px; font-weight: 700;
-    backdrop-filter: blur(12px); z-index: 200;
-    white-space: nowrap;
-    opacity: 0; transition: opacity 0.3s; pointer-events: none;
-  }
-  .toast.show { opacity: 1; }
+/* ── SCREENS ── */
+.screen {
+  display: none;
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  bottom: var(--nav-h);
+  background: var(--dark);
+  z-index: 40;
+  overflow-y: auto;
+  padding: 20px 14px 14px;
+  flex-direction: column;
+  gap: 14px;
+}
+.screen.active { display: flex; }
+
+.screen-title {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 38px; letter-spacing: 2px;
+  background: linear-gradient(90deg, #fff, var(--purple-light));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  margin-top: 8px;
+}
+
+/* DISCOVER */
+.venue-row {
+  background: rgba(30,8,65,0.85);
+  border: 1.5px solid rgba(123,47,255,0.3);
+  border-radius: 18px; padding: 14px 16px;
+  display: flex; align-items: center; gap: 14px;
+  cursor: pointer; transition: border-color 0.2s, transform 0.15s;
+}
+.venue-row:active { border-color: var(--purple); transform: scale(0.98); }
+.venue-row-icon {
+  width: 54px; height: 54px; border-radius: 50%;
+  background: var(--purple);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 26px; flex-shrink: 0;
+}
+.venue-row-info { flex: 1; }
+.venue-row-name {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 21px; color: #fff; letter-spacing: 1px;
+}
+.venue-row-sub { font-size: 12px; color: var(--purple-light); font-weight: 600; margin-top: 2px; }
+.venue-row-count {
+  background: #ff3a3a; color: white;
+  font-size: 13px; font-weight: 900;
+  padding: 5px 12px; border-radius: 20px;
+  min-width: 38px; text-align: center;
+}
+
+/* VYBERZ */
+.user-row {
+  background: rgba(30,8,65,0.85);
+  border: 1.5px solid rgba(123,47,255,0.3);
+  border-radius: 18px; padding: 12px 16px;
+  display: flex; align-items: center; gap: 14px;
+  cursor: pointer; transition: border-color 0.2s;
+}
+.user-row:active { border-color: var(--purple); }
+.user-avatar {
+  width: 50px; height: 50px; border-radius: 50%;
+  background: linear-gradient(135deg, var(--purple), var(--purple-mid));
+  display: flex; align-items: center; justify-content: center;
+  font-size: 24px; flex-shrink: 0;
+  border: 2px solid rgba(200,168,255,0.35);
+}
+.user-info { flex: 1; }
+.user-name { font-weight: 900; color: #fff; font-size: 15px; }
+.user-dist { font-size: 12px; color: var(--purple-light); font-weight: 600; margin-top: 2px; }
+.user-vibe { font-size: 11px; color: rgba(200,168,255,0.6); font-weight: 700; margin-top: 2px; }
+.vyb-btn {
+  background: var(--purple); color: white; border: none;
+  border-radius: 20px; padding: 8px 18px;
+  font-family: 'Nunito', sans-serif; font-size: 13px; font-weight: 900;
+  cursor: pointer; transition: background 0.2s;
+}
+.vyb-btn:active { background: #2a7a2a; }
+
+/* PROFILE */
+.profile-header {
+  display: flex; flex-direction: column; align-items: center;
+  gap: 10px; padding: 16px 0 8px;
+}
+.profile-avatar {
+  width: 92px; height: 92px; border-radius: 50%;
+  background: linear-gradient(135deg, var(--purple), var(--purple-mid));
+  display: flex; align-items: center; justify-content: center;
+  font-size: 44px;
+  border: 3px solid var(--purple-light);
+  box-shadow: 0 0 32px rgba(123,47,255,0.55);
+}
+.profile-name {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 34px; color: #fff; letter-spacing: 2px;
+}
+.profile-handle { color: var(--purple-light); font-size: 14px; font-weight: 700; }
+.profile-stats {
+  display: flex;
+  background: rgba(30,8,65,0.85);
+  border: 1.5px solid rgba(123,47,255,0.3);
+  border-radius: 18px; overflow: hidden;
+}
+.stat {
+  flex: 1; padding: 14px 0; text-align: center;
+  border-right: 1px solid rgba(123,47,255,0.2);
+}
+.stat:last-child { border-right: none; }
+.stat-val {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 28px; color: #fff;
+}
+.stat-lbl { font-size: 10px; color: var(--purple-light); font-weight: 800; letter-spacing: 1px; text-transform: uppercase; }
+.section-title {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 20px; color: var(--purple-light); letter-spacing: 2px; margin-top: 6px;
+}
+.vibe-tags { display: flex; flex-wrap: wrap; gap: 8px; }
+.vibe-tag {
+  background: rgba(123,47,255,0.25);
+  border: 1px solid rgba(123,47,255,0.5);
+  border-radius: 20px; padding: 6px 14px;
+  font-size: 13px; font-weight: 700; color: var(--purple-light);
+}
+
+/* ── LOADING ── */
+#loading {
+  position: absolute; inset: 0; background: var(--dark);
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  z-index: 300; gap: 18px; transition: opacity 0.6s;
+}
+#loading.hidden { opacity:0; pointer-events:none; }
+.loader-logo {
+  font-family: 'Bebas Neue', sans-serif; font-size: 60px;
+  background: linear-gradient(135deg, var(--purple), var(--purple-light));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  letter-spacing: 5px;
+}
+.loader-sub {
+  color: var(--purple-light); font-size: 13px; font-weight: 700;
+  letter-spacing: 2px; text-transform: uppercase; opacity: 0.7;
+}
+.loader-spinner {
+  width: 40px; height: 40px;
+  border: 3px solid rgba(123,47,255,0.2);
+  border-top-color: var(--purple); border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+@keyframes spin { to{transform:rotate(360deg);} }
+
+/* ── ERROR ── */
+#errorPanel {
+  display: none; position: absolute; inset: 0;
+  background: var(--dark);
+  flex-direction: column; align-items: center; justify-content: center;
+  z-index: 400; gap: 14px; padding: 32px; text-align: center;
+}
+#errorPanel.show { display:flex; }
+.err-icon { font-size:50px; }
+.err-title { font-family:'Bebas Neue',sans-serif; font-size:30px; color:#ff6b6b; letter-spacing:2px; }
+.err-msg { color:var(--purple-light); font-size:13px; font-weight:600; line-height:1.6; max-width:320px; }
+.err-code { background:rgba(255,107,107,0.1); border:1px solid rgba(255,107,107,0.3); border-radius:10px; padding:10px 16px; color:#ff9999; font-size:12px; font-family:monospace; max-width:320px; word-break:break-all; }
+.err-btn { background:var(--purple); color:white; border:none; border-radius:20px; padding:11px 26px; font-family:'Nunito',sans-serif; font-size:14px; font-weight:900; cursor:pointer; margin-top:4px; }
+
+/* ── TOAST ── */
+.toast {
+  position: fixed;
+  bottom: calc(var(--nav-h) + 18px); left: 50%;
+  transform: translateX(-50%);
+  background: rgba(18,5,45,0.97);
+  border: 1.5px solid var(--purple);
+  border-radius: 18px; padding: 12px 22px;
+  color: white; font-size: 14px; font-weight: 700;
+  backdrop-filter: blur(14px); z-index: 200;
+  white-space: nowrap;
+  opacity: 0; transition: opacity 0.3s; pointer-events: none;
+  max-width: 90vw; text-align: center;
+}
+.toast.show { opacity:1; }
 </style>
 </head>
 <body>
-
 <div class="app">
 
   <!-- LOADING -->
@@ -399,14 +505,18 @@
   <!-- SEARCH BAR -->
   <div class="search-bar">
     <div class="search-wrapper">
-      <span class="search-icon">🔍</span>
+      <span class="search-icon-left">
+        <svg viewBox="0 0 24 24" fill="none" stroke="rgba(210,185,255,0.8)" stroke-width="2.5" stroke-linecap="round">
+          <circle cx="11" cy="11" r="7"/><line x1="16.5" y1="16.5" x2="22" y2="22"/>
+        </svg>
+      </span>
       <input class="search-input" id="searchInput" type="text" placeholder="Caută distracția...">
     </div>
     <div class="filter-btn">
-      <svg width="18" height="14" viewBox="0 0 18 14" fill="none">
-        <line x1="0" y1="2" x2="18" y2="2" stroke="#c8a8ff" stroke-width="2" stroke-linecap="round"/>
-        <line x1="3" y1="7" x2="15" y2="7" stroke="#c8a8ff" stroke-width="2" stroke-linecap="round"/>
-        <line x1="6" y1="12" x2="12" y2="12" stroke="#c8a8ff" stroke-width="2" stroke-linecap="round"/>
+      <svg width="20" height="15" viewBox="0 0 20 15" fill="none">
+        <line x1="0" y1="2"  x2="20" y2="2"  stroke="rgba(210,185,255,0.9)" stroke-width="2" stroke-linecap="round"/>
+        <line x1="3" y1="7"  x2="17" y2="7"  stroke="rgba(210,185,255,0.9)" stroke-width="2" stroke-linecap="round"/>
+        <line x1="6" y1="13" x2="14" y2="13" stroke="rgba(210,185,255,0.9)" stroke-width="2" stroke-linecap="round"/>
       </svg>
     </div>
   </div>
@@ -414,23 +524,33 @@
   <!-- LOCATION TOGGLE -->
   <div class="location-toggle" id="locToggle">
     <div class="toggle-dot" id="toggleDot"></div>
-    <svg width="13" height="13" viewBox="0 0 24 24" fill="#90EE90">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="#7fff7f">
       <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
     </svg>
     <span id="toggleLabel">On</span>
   </div>
 
+  <!-- MUSIC NOTES -->
+  <div class="music-notes">🎵🎶</div>
+
   <!-- VENUE CARD -->
   <div class="venue-card">
-    <div class="venue-label">YOU ARE <span>VYBING</span> AT...</div>
+    <div class="venue-label">YOU ARE <span class="vybing-word">VYBING</span> AT...</div>
     <div class="venue-name" id="venueName">Locating...</div>
   </div>
 
   <!-- ACTION BUTTONS -->
   <div class="action-btns">
-    <button class="action-btn btn-v" id="vybBtn">V</button>
-    <button class="action-btn btn-send">
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="white">
+    <!-- V teardrop button -->
+    <button class="btn-v" id="vybBtn" aria-label="Center map">
+      <div class="btn-v-inner">
+        <span class="v-letter">V</span>
+        <span class="v-plus">+</span>
+      </div>
+    </button>
+    <!-- Send button -->
+    <button class="btn-send" aria-label="Send location">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="white">
         <path d="M2 12L22 2L14 22L11 13L2 12Z"/>
       </svg>
     </button>
@@ -439,96 +559,21 @@
   <!-- DISCOVER SCREEN -->
   <div class="screen" id="discoverScreen">
     <div class="screen-title">🔭 Discover</div>
-    <div class="venue-row">
-      <div class="venue-row-icon">🔥</div>
-      <div class="venue-row-info">
-        <div class="venue-row-name">Club Havana</div>
-        <div class="venue-row-sub">0.3 km away · Nightclub</div>
-      </div>
-      <div class="venue-row-count">55</div>
-    </div>
-    <div class="venue-row">
-      <div class="venue-row-icon">🥂</div>
-      <div class="venue-row-info">
-        <div class="venue-row-name">Sky Lounge</div>
-        <div class="venue-row-sub">0.6 km away · Rooftop Bar</div>
-      </div>
-      <div class="venue-row-count">89</div>
-    </div>
-    <div class="venue-row">
-      <div class="venue-row-icon">🎵</div>
-      <div class="venue-row-info">
-        <div class="venue-row-name">The Basement</div>
-        <div class="venue-row-sub">1.1 km away · Live Music</div>
-      </div>
-      <div class="venue-row-count">22</div>
-    </div>
-    <div class="venue-row">
-      <div class="venue-row-icon">🤙</div>
-      <div class="venue-row-info">
-        <div class="venue-row-name">Chill Garden</div>
-        <div class="venue-row-sub">1.4 km away · Outdoor</div>
-      </div>
-      <div class="venue-row-count">37</div>
-    </div>
-    <div class="venue-row">
-      <div class="venue-row-icon">💀</div>
-      <div class="venue-row-info">
-        <div class="venue-row-name">Dark Rave</div>
-        <div class="venue-row-sub">2.0 km away · Underground</div>
-      </div>
-      <div class="venue-row-count">80</div>
-    </div>
+    <div class="venue-row"><div class="venue-row-icon" style="background:#8a3500">🔥</div><div class="venue-row-info"><div class="venue-row-name">Club Havana</div><div class="venue-row-sub">0.3 km away · Nightclub</div></div><div class="venue-row-count">55</div></div>
+    <div class="venue-row"><div class="venue-row-icon" style="background:#5a3010">🥂</div><div class="venue-row-info"><div class="venue-row-name">Sky Lounge</div><div class="venue-row-sub">0.6 km away · Rooftop Bar</div></div><div class="venue-row-count">89</div></div>
+    <div class="venue-row"><div class="venue-row-icon" style="background:#1a5a8a">🎵</div><div class="venue-row-info"><div class="venue-row-name">The Basement</div><div class="venue-row-sub">1.1 km away · Live Music</div></div><div class="venue-row-count">22</div></div>
+    <div class="venue-row"><div class="venue-row-icon" style="background:#2a7a2a">🤙</div><div class="venue-row-info"><div class="venue-row-name">Chill Garden</div><div class="venue-row-sub">1.4 km away · Outdoor</div></div><div class="venue-row-count">37</div></div>
+    <div class="venue-row"><div class="venue-row-icon" style="background:#3a1a7a">💀</div><div class="venue-row-info"><div class="venue-row-name">Dark Rave</div><div class="venue-row-sub">2.0 km away · Underground</div></div><div class="venue-row-count">80</div></div>
   </div>
 
   <!-- VYBERZ SCREEN -->
   <div class="screen" id="vyberzScreen">
     <div class="screen-title">👥 Vyberz</div>
-    <div class="user-row">
-      <div class="user-avatar">😎</div>
-      <div class="user-info">
-        <div class="user-name">Jade K.</div>
-        <div class="user-dist">📍 120m away</div>
-        <div class="user-vibe">🔥 Vybing at Club Havana</div>
-      </div>
-      <button class="vyb-btn">Vyb</button>
-    </div>
-    <div class="user-row">
-      <div class="user-avatar">🎧</div>
-      <div class="user-info">
-        <div class="user-name">Marcus T.</div>
-        <div class="user-dist">📍 240m away</div>
-        <div class="user-vibe">🎵 Vibing at The Basement</div>
-      </div>
-      <button class="vyb-btn">Vyb</button>
-    </div>
-    <div class="user-row">
-      <div class="user-avatar">🌙</div>
-      <div class="user-info">
-        <div class="user-name">Zara M.</div>
-        <div class="user-dist">📍 380m away</div>
-        <div class="user-vibe">🥂 Sky Lounge tonight</div>
-      </div>
-      <button class="vyb-btn">Vyb</button>
-    </div>
-    <div class="user-row">
-      <div class="user-avatar">🦋</div>
-      <div class="user-info">
-        <div class="user-name">Leo R.</div>
-        <div class="user-dist">📍 500m away</div>
-        <div class="user-vibe">🤙 Just chilling</div>
-      </div>
-      <button class="vyb-btn">Vyb</button>
-    </div>
-    <div class="user-row">
-      <div class="user-avatar">⚡</div>
-      <div class="user-info">
-        <div class="user-name">Nina S.</div>
-        <div class="user-dist">📍 720m away</div>
-        <div class="user-vibe">💀 Dark Rave crew</div>
-      </div>
-      <button class="vyb-btn">Vyb</button>
-    </div>
+    <div class="user-row"><div class="user-avatar">😎</div><div class="user-info"><div class="user-name">Jade K.</div><div class="user-dist">📍 120m away</div><div class="user-vibe">🔥 Vybing at Club Havana</div></div><button class="vyb-btn">Vyb</button></div>
+    <div class="user-row"><div class="user-avatar">🎧</div><div class="user-info"><div class="user-name">Marcus T.</div><div class="user-dist">📍 240m away</div><div class="user-vibe">🎵 Vibing at The Basement</div></div><button class="vyb-btn">Vyb</button></div>
+    <div class="user-row"><div class="user-avatar">🌙</div><div class="user-info"><div class="user-name">Zara M.</div><div class="user-dist">📍 380m away</div><div class="user-vibe">🥂 Sky Lounge tonight</div></div><button class="vyb-btn">Vyb</button></div>
+    <div class="user-row"><div class="user-avatar">🦋</div><div class="user-info"><div class="user-name">Leo R.</div><div class="user-dist">📍 500m away</div><div class="user-vibe">🤙 Just chilling</div></div><button class="vyb-btn">Vyb</button></div>
+    <div class="user-row"><div class="user-avatar">⚡</div><div class="user-info"><div class="user-name">Nina S.</div><div class="user-dist">📍 720m away</div><div class="user-vibe">💀 Dark Rave crew</div></div><button class="vyb-btn">Vyb</button></div>
   </div>
 
   <!-- PROFILE SCREEN -->
@@ -539,20 +584,11 @@
       <div class="profile-handle">@yourvybe</div>
     </div>
     <div class="profile-stats">
-      <div class="stat">
-        <div class="stat-val">128</div>
-        <div class="stat-lbl">VYBERZ</div>
-      </div>
-      <div class="stat">
-        <div class="stat-val">47</div>
-        <div class="stat-lbl">EVENTS</div>
-      </div>
-      <div class="stat">
-        <div class="stat-val">4.8</div>
-        <div class="stat-lbl">VYBE ⭐</div>
-      </div>
+      <div class="stat"><div class="stat-val">128</div><div class="stat-lbl">VYBERZ</div></div>
+      <div class="stat"><div class="stat-val">47</div><div class="stat-lbl">EVENTS</div></div>
+      <div class="stat"><div class="stat-val">4.8</div><div class="stat-lbl">VYBE ⭐</div></div>
     </div>
-    <div class="profile-section-title">Your Vibes</div>
+    <div class="section-title">Your Vibes</div>
     <div class="vibe-tags">
       <span class="vibe-tag">🔥 Nightlife</span>
       <span class="vibe-tag">🎵 Live Music</span>
@@ -560,21 +596,9 @@
       <span class="vibe-tag">🌿 Chill Spots</span>
       <span class="vibe-tag">💀 Underground</span>
     </div>
-    <div class="profile-section-title">Recent Vybes</div>
-    <div class="venue-row">
-      <div class="venue-row-icon" style="background:#8a3500">🔥</div>
-      <div class="venue-row-info">
-        <div class="venue-row-name">Club Havana</div>
-        <div class="venue-row-sub">Last night · 3 hrs</div>
-      </div>
-    </div>
-    <div class="venue-row">
-      <div class="venue-row-icon" style="background:#5a3010">🥂</div>
-      <div class="venue-row-info">
-        <div class="venue-row-name">Sky Lounge</div>
-        <div class="venue-row-sub">2 days ago · 2 hrs</div>
-      </div>
-    </div>
+    <div class="section-title">Recent Vybes</div>
+    <div class="venue-row"><div class="venue-row-icon" style="background:#8a3500">🔥</div><div class="venue-row-info"><div class="venue-row-name">Club Havana</div><div class="venue-row-sub">Last night · 3 hrs</div></div></div>
+    <div class="venue-row"><div class="venue-row-icon" style="background:#5a3010">🥂</div><div class="venue-row-info"><div class="venue-row-name">Sky Lounge</div><div class="venue-row-sub">2 days ago · 2 hrs</div></div></div>
   </div>
 
   <!-- TOAST -->
@@ -582,239 +606,284 @@
 
   <!-- BOTTOM NAV -->
   <div class="bottom-nav">
-    <div class="nav-item active" id="nav-map" onclick="showScreen('map', this)">
-      <span class="nav-icon">📍</span>
+
+    <!-- MAP -->
+    <div class="nav-item nav-map active" id="nav-map" onclick="showScreen('map',this)">
+      <div class="nav-icon-wrap">
+        <svg class="map-icon-svg" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <!-- dotted circle -->
+          <circle cx="20" cy="22" r="10" stroke="rgba(200,168,255,0.7)" stroke-width="1.8" stroke-dasharray="3 2.5"/>
+          <!-- pin -->
+          <circle cx="20" cy="14" r="5" fill="rgba(200,168,255,0.85)"/>
+          <path d="M20 19 L20 24" stroke="rgba(200,168,255,0.85)" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+      </div>
       <span class="nav-label">MAP</span>
     </div>
-    <div class="nav-divider"></div>
-    <div class="nav-item" id="nav-discover" onclick="showScreen('discover', this)">
-      <span class="nav-icon">🔭</span>
+
+    <!-- DISCOVER -->
+    <div class="nav-item" id="nav-discover" onclick="showScreen('discover',this)">
+      <div class="nav-icon-wrap">
+        <!-- telescope SVG -->
+        <svg width="34" height="34" viewBox="0 0 34 34" fill="none">
+          <line x1="17" y1="20" x2="17" y2="30" stroke="white" stroke-width="2" stroke-linecap="round"/>
+          <line x1="13" y1="30" x2="21" y2="30" stroke="white" stroke-width="2" stroke-linecap="round"/>
+          <rect x="6" y="10" width="22" height="10" rx="5" fill="white" opacity="0.9" transform="rotate(-20 17 15)"/>
+          <circle cx="23" cy="9" r="4" fill="white" opacity="0.7"/>
+        </svg>
+      </div>
       <span class="nav-label">DISCOVER</span>
     </div>
-    <div class="nav-divider"></div>
-    <div class="nav-item" id="nav-vyberz" onclick="showScreen('vyberz', this)">
-      <span class="nav-icon">👥</span>
+
+    <!-- VYBERZ -->
+    <div class="nav-item" id="nav-vyberz" onclick="showScreen('vyberz',this)">
+      <div class="nav-icon-wrap">
+        <!-- people SVG -->
+        <svg width="36" height="30" viewBox="0 0 36 30" fill="none">
+          <circle cx="11" cy="8" r="5" fill="white" opacity="0.9"/>
+          <circle cx="25" cy="8" r="5" fill="white" opacity="0.9"/>
+          <circle cx="18" cy="7" r="6" fill="white"/>
+          <path d="M4 28 C4 20 8 17 11 17 C13 17 14 18 18 18 C22 18 23 17 25 17 C28 17 32 20 32 28" stroke="white" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+        </svg>
+      </div>
       <span class="nav-label">VYBERZ</span>
     </div>
-    <div class="nav-divider"></div>
-    <div class="nav-item" id="nav-profile" onclick="showScreen('profile', this)">
-      <span class="nav-icon">👤</span>
+
+    <!-- PROFILE -->
+    <div class="nav-item" id="nav-profile" onclick="showScreen('profile',this)">
+      <div class="nav-icon-wrap">
+        <!-- person SVG -->
+        <svg width="28" height="32" viewBox="0 0 28 32" fill="none">
+          <circle cx="14" cy="9" r="7" fill="white" opacity="0.9"/>
+          <path d="M2 30 C2 21 6 18 14 18 C22 18 26 21 26 30" stroke="white" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+        </svg>
+      </div>
       <span class="nav-label">PROFILE</span>
     </div>
-  </div>
 
+  </div>
 </div><!-- end app -->
 
 <script>
-  // ── Error handlers ──
+  // ── Error guards ──
   window.gm_authFailure = function() {
-    showError('API Key Error', 'Maps API key not authorized. Check Google Cloud Console.', 'Enable Maps JavaScript API & link billing account');
+    showError('API Key Error','Maps API key not authorized.','Enable Maps JavaScript API & link billing in Google Cloud Console');
   };
-
   const mapTimeout = setTimeout(() => {
-    if (!window._mapLoaded) {
-      showError('Map Failed to Load', 'Could not load Google Maps. Check your internet connection.', 'maps.googleapis.com unreachable');
-    }
+    if (!window._mapLoaded) showError('Map Failed to Load','Could not reach Google Maps. Check internet connection.','maps.googleapis.com unreachable');
   }, 10000);
 
   function showError(title, msg, code) {
     document.getElementById('loading').classList.add('hidden');
     document.getElementById('errTitle').textContent = title;
     document.getElementById('errMsg').textContent = msg;
-    document.getElementById('errCode').textContent = code || '';
+    document.getElementById('errCode').textContent = code||'';
     document.getElementById('errorPanel').classList.add('show');
   }
 
   // ── Dark map style ──
   const DARK_STYLE = [
-    { elementType:"geometry", stylers:[{color:"#0d0d18"}] },
-    { elementType:"labels.text.fill", stylers:[{color:"#2a2a55"}] },
-    { elementType:"labels.text.stroke", stylers:[{color:"#0d0d18"}] },
-    { featureType:"road", elementType:"geometry", stylers:[{color:"#1e1e38"}] },
-    { featureType:"road", elementType:"geometry.stroke", stylers:[{color:"#12122a"}] },
-    { featureType:"road", elementType:"labels.text.fill", stylers:[{color:"#3a3a70"}] },
-    { featureType:"road.highway", elementType:"geometry", stylers:[{color:"#282850"}] },
-    { featureType:"road.highway", elementType:"labels.text.fill", stylers:[{color:"#4a4a8a"}] },
-    { featureType:"water", elementType:"geometry", stylers:[{color:"#060614"}] },
-    { featureType:"poi", stylers:[{visibility:"off"}] },
-    { featureType:"transit", stylers:[{visibility:"off"}] },
-    { featureType:"landscape", elementType:"geometry", stylers:[{color:"#0d0d1e"}] },
-    { featureType:"administrative", elementType:"geometry", stylers:[{color:"#1a1a38"}] },
-    { featureType:"administrative.locality", elementType:"labels.text.fill", stylers:[{color:"#3a3a6a"}] },
+    {elementType:"geometry",stylers:[{color:"#0d0d1a"}]},
+    {elementType:"labels.text.fill",stylers:[{color:"#2a2a60"}]},
+    {elementType:"labels.text.stroke",stylers:[{color:"#0d0d1a"}]},
+    {featureType:"road",elementType:"geometry",stylers:[{color:"#1a1a3a"}]},
+    {featureType:"road",elementType:"geometry.stroke",stylers:[{color:"#0f0f28"}]},
+    {featureType:"road",elementType:"labels.text.fill",stylers:[{color:"#38388a"}]},
+    {featureType:"road.highway",elementType:"geometry",stylers:[{color:"#252550"}]},
+    {featureType:"road.highway",elementType:"labels.text.fill",stylers:[{color:"#48488a"}]},
+    {featureType:"water",elementType:"geometry",stylers:[{color:"#050510"}]},
+    {featureType:"poi",stylers:[{visibility:"off"}]},
+    {featureType:"transit",stylers:[{visibility:"off"}]},
+    {featureType:"landscape",elementType:"geometry",stylers:[{color:"#0d0d1e"}]},
+    {featureType:"administrative",elementType:"geometry",stylers:[{color:"#181838"}]},
+    {featureType:"administrative.locality",elementType:"labels.text.fill",stylers:[{color:"#38386a"}]},
   ];
 
   const SAMPLE_USERS = [
-    { emoji:"🤙", count:null, color:"#5b1fbb", offset:{lat:0.004,  lng:0.003},  name:"Shaka Crew",  vibe:"Chilling at the rooftop" },
-    { emoji:"💀", count:null, color:"#3a1a7a", offset:{lat:0.006,  lng:-0.004}, name:"Night Owls",  vibe:"Late night sessions" },
-    { emoji:"🌿", count:22,   color:"#2a7a2a", offset:{lat:-0.003, lng:0.005},  name:"Green Vibes", vibe:"22 people vibing" },
-    { emoji:"🔥", count:55,   color:"#8a3500", offset:{lat:0.002,  lng:0.007},  name:"Fire Squad",  vibe:"55 in the building 🔥" },
-    { emoji:"🥂", count:89,   color:"#5a3010", offset:{lat:-0.005, lng:-0.002}, name:"Toast Gang",  vibe:"89 celebrating tonight" },
-    { emoji:"💀", count:null, color:"#3a1a7a", offset:{lat:0.001,  lng:-0.007}, name:"Dark Ones",   vibe:"Secret gathering" },
-    { emoji:"🤙", count:80,   color:"#5b1fbb", offset:{lat:-0.007, lng:0.006},  name:"Chill Spot",  vibe:"80 Vyberz here" },
-    { emoji:"🔥", count:37,   color:"#cc4400", offset:{lat:-0.002, lng:-0.005}, name:"Hot Zone",    vibe:"37 and climbing!" },
+    {emoji:"🤙",count:null, color:"#5b1fbb",offset:{lat:0.004, lng:0.003}, name:"Shaka Crew", vibe:"Chilling at the rooftop"},
+    {emoji:"💀",count:null, color:"#3a1a7a",offset:{lat:0.006, lng:-0.004},name:"Night Owls",  vibe:"Late night sessions"},
+    {emoji:"🌿",count:22,   color:"#2a7a2a",offset:{lat:-0.003,lng:0.005}, name:"Green Vibes",vibe:"22 people vibing"},
+    {emoji:"🔥",count:55,   color:"#8a3500",offset:{lat:0.002, lng:0.007}, name:"Fire Squad", vibe:"55 in the building 🔥"},
+    {emoji:"🥂",count:89,   color:"#5a3010",offset:{lat:-0.005,lng:-0.002},name:"Toast Gang", vibe:"89 celebrating tonight"},
+    {emoji:"💀",count:null, color:"#3a1a7a",offset:{lat:0.001, lng:-0.007},name:"Dark Ones",  vibe:"Secret gathering"},
+    {emoji:"🤙",count:80,   color:"#5b1fbb",offset:{lat:-0.007,lng:0.006}, name:"Chill Spot", vibe:"80 Vyberz here"},
+    {emoji:"🔥",count:37,   color:"#cc4400",offset:{lat:-0.002,lng:-0.005},name:"Hot Zone",   vibe:"37 and climbing!"},
   ];
 
-  let map, geocoder, userMarker, locationOn = true, userPos = null;
+  let map, geocoder, autocomplete, userMarker, locationOn=true, userPos=null;
 
   function makePinSVG(emoji, color, count) {
-    const badge = count != null
-      ? `<circle cx="38" cy="9" r="11" fill="#ff3a3a" stroke="#0d0d18" stroke-width="2"/>
+    const badge = count!=null
+      ? `<circle cx="38" cy="9" r="11" fill="#ff3a3a" stroke="#0d0d1a" stroke-width="2"/>
          <text x="38" y="14" text-anchor="middle" font-family="Nunito,sans-serif" font-weight="900" font-size="11" fill="white">${count}</text>`
-      : '';
-    return 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent(
+      :'';
+    return 'data:image/svg+xml;charset=UTF-8,'+encodeURIComponent(
       `<svg xmlns="http://www.w3.org/2000/svg" width="52" height="66" viewBox="0 0 52 66">
-        <defs><filter id="s"><feDropShadow dx="0" dy="3" stdDeviation="3" flood-color="rgba(0,0,0,0.55)"/></filter></defs>
+        <defs><filter id="s"><feDropShadow dx="0" dy="3" stdDeviation="3" flood-color="rgba(0,0,0,0.6)"/></filter></defs>
         <path d="M26 1C12 1 1 12 1 26c0 18 25 39 25 39s25-21 25-39C51 12 40 1 26 1Z"
-              fill="${color}" stroke="rgba(255,255,255,0.2)" stroke-width="1.5" filter="url(#s)"/>
+              fill="${color}" stroke="rgba(255,255,255,0.18)" stroke-width="1.5" filter="url(#s)"/>
         <text x="26" y="32" text-anchor="middle" font-size="22" dominant-baseline="middle">${emoji}</text>
         ${badge}
       </svg>`
     );
   }
 
-  function showToast(msg, dur = 2500) {
-    const t = document.getElementById('toast');
-    t.textContent = msg; t.classList.add('show');
-    setTimeout(() => t.classList.remove('show'), dur);
+  function showToast(msg, dur=2500) {
+    const t=document.getElementById('toast');
+    t.textContent=msg; t.classList.add('show');
+    setTimeout(()=>t.classList.remove('show'),dur);
   }
 
-  function getVenueName(lat, lng) {
-    if (!geocoder) return;
-    geocoder.geocode({ location: { lat, lng } }, (results, status) => {
-      const name = (status === 'OK' && results.length)
-        ? (results[0].address_components.find(c =>
-            c.types.includes('establishment') || c.types.includes('point_of_interest')
-          )?.long_name || results[0].address_components[0]?.long_name || 'Your Area')
-        : 'Your Location';
-      document.getElementById('venueName').textContent = name;
+  function getVenueName(lat,lng) {
+    if(!geocoder) return;
+    geocoder.geocode({location:{lat,lng}},(results,status)=>{
+      const name=(status==='OK'&&results.length)
+        ?(results[0].address_components.find(c=>
+            c.types.includes('establishment')||c.types.includes('point_of_interest')
+          )?.long_name||results[0].address_components[0]?.long_name||'Your Area')
+        :'Your Location';
+      document.getElementById('venueName').textContent=name;
     });
   }
 
-  function placeMarkers(lat, lng) {
-    const userSVG = `<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28">
-      <circle cx="14" cy="14" r="12" fill="rgba(123,47,255,0.22)"/>
+  function placeMarkers(lat,lng) {
+    const userSVG=`<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28">
+      <circle cx="14" cy="14" r="12" fill="rgba(123,47,255,0.25)"/>
       <circle cx="14" cy="14" r="7" fill="#7B2FFF" stroke="white" stroke-width="2.5"/>
     </svg>`;
-    if (userMarker) userMarker.setMap(null);
-    userMarker = new google.maps.Marker({
-      position: { lat, lng }, map,
-      icon: {
-        url: 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent(userSVG),
-        scaledSize: new google.maps.Size(28, 28),
-        anchor: new google.maps.Point(14, 14),
-      },
-      title: 'You', zIndex: 999,
+    if(userMarker) userMarker.setMap(null);
+    userMarker=new google.maps.Marker({
+      position:{lat,lng},map,
+      icon:{url:'data:image/svg+xml;charset=UTF-8,'+encodeURIComponent(userSVG),
+        scaledSize:new google.maps.Size(28,28),anchor:new google.maps.Point(14,14)},
+      title:'You',zIndex:999,
     });
-    SAMPLE_USERS.forEach(u => {
-      const marker = new google.maps.Marker({
-        position: { lat: lat + u.offset.lat, lng: lng + u.offset.lng },
-        map,
-        icon: {
-          url: makePinSVG(u.emoji, u.color, u.count),
-          scaledSize: new google.maps.Size(48, 58),
-          anchor: new google.maps.Point(24, 58),
-        },
-        title: u.name,
+    SAMPLE_USERS.forEach(u=>{
+      const m=new google.maps.Marker({
+        position:{lat:lat+u.offset.lat,lng:lng+u.offset.lng},map,
+        icon:{url:makePinSVG(u.emoji,u.color,u.count),
+          scaledSize:new google.maps.Size(48,58),anchor:new google.maps.Point(24,58)},
+        title:u.name,
       });
-      marker.addListener('click', () => showToast(`${u.emoji} ${u.name} — ${u.vibe}`));
+      m.addListener('click',()=>showToast(`${u.emoji} ${u.name} — ${u.vibe}`));
     });
-    getVenueName(lat, lng);
+    getVenueName(lat,lng);
   }
 
-  window.initMap = function () {
-    window._mapLoaded = true;
+  window.initMap=function(){
+    window._mapLoaded=true;
     clearTimeout(mapTimeout);
     try {
-      geocoder = new google.maps.Geocoder();
-      const defaultCenter = { lat: -1.2921, lng: 36.8219 };
-      map = new google.maps.Map(document.getElementById('map'), {
-        center: defaultCenter, zoom: 15,
-        styles: DARK_STYLE,
-        disableDefaultUI: true,
-        gestureHandling: 'greedy',
-        clickableIcons: false,
+      geocoder=new google.maps.Geocoder();
+      const def={lat:-1.2921,lng:36.8219};
+
+      map=new google.maps.Map(document.getElementById('map'),{
+        center:def,zoom:15,
+        styles:DARK_STYLE,
+        disableDefaultUI:true,
+        gestureHandling:'greedy',
+        clickableIcons:false,
       });
-      document.getElementById('loadingMsg').textContent = 'Finding your location...';
-      if (navigator.geolocation) {
+
+      // ── Places Autocomplete on search bar ──
+      autocomplete=new google.maps.places.Autocomplete(
+        document.getElementById('searchInput'),
+        {fields:['geometry','name','formatted_address']}
+      );
+      autocomplete.bindTo('bounds',map);
+      autocomplete.addListener('place_changed',()=>{
+        const place=autocomplete.getPlace();
+        if(!place.geometry||!place.geometry.location) {
+          showToast('❌ Place not found'); return;
+        }
+        map.setCenter(place.geometry.location);
+        map.setZoom(16);
+        document.getElementById('venueName').textContent=place.name||place.formatted_address;
+        showToast(`📍 ${place.name||place.formatted_address}`);
+        // Drop a highlight marker
+        new google.maps.Marker({
+          position:place.geometry.location,map,
+          icon:{url:makePinSVG('📍','#7B2FFF',null),
+            scaledSize:new google.maps.Size(48,58),anchor:new google.maps.Point(24,58)},
+          title:place.name,animation:google.maps.Animation.DROP,
+        });
+      });
+
+      document.getElementById('loadingMsg').textContent='Finding your location...';
+
+      if(navigator.geolocation){
         navigator.geolocation.getCurrentPosition(
-          pos => {
-            userPos = { lat: pos.coords.latitude, lng: pos.coords.longitude };
+          pos=>{
+            userPos={lat:pos.coords.latitude,lng:pos.coords.longitude};
             map.setCenter(userPos);
-            placeMarkers(userPos.lat, userPos.lng);
+            placeMarkers(userPos.lat,userPos.lng);
             hideLoading();
           },
-          () => {
-            userPos = defaultCenter;
-            placeMarkers(userPos.lat, userPos.lng);
+          ()=>{
+            userPos=def;
+            placeMarkers(userPos.lat,userPos.lng);
             hideLoading();
             showToast('📍 Showing Nairobi — allow location for your area');
           },
-          { enableHighAccuracy: true, timeout: 8000 }
+          {enableHighAccuracy:true,timeout:8000}
         );
       } else {
-        userPos = defaultCenter;
-        placeMarkers(userPos.lat, userPos.lng);
-        hideLoading();
+        userPos=def; placeMarkers(userPos.lat,userPos.lng); hideLoading();
       }
 
-      document.getElementById('vybBtn').addEventListener('click', () => {
-        if (userPos) { map.panTo(userPos); map.setZoom(15); showToast('📍 Centered on you'); }
+      // V button = re-center
+      document.getElementById('vybBtn').addEventListener('click',()=>{
+        if(userPos){map.panTo(userPos);map.setZoom(15);showToast('📍 Centered on you');}
       });
 
-      document.getElementById('locToggle').addEventListener('click', () => {
-        locationOn = !locationOn;
-        const dot = document.getElementById('toggleDot');
-        const lbl = document.getElementById('toggleLabel');
-        dot.style.background = locationOn ? '#90EE90' : '#888';
-        dot.style.animation = locationOn ? 'blink 1.5s infinite' : 'none';
-        lbl.textContent = locationOn ? 'On' : 'Off';
-        lbl.style.color = locationOn ? '#90EE90' : '#888';
-        showToast(locationOn ? '📍 Location sharing ON' : '🚫 Location sharing OFF');
-        if (locationOn && userPos) map.panTo(userPos);
+      // Location toggle
+      document.getElementById('locToggle').addEventListener('click',()=>{
+        locationOn=!locationOn;
+        const dot=document.getElementById('toggleDot');
+        const lbl=document.getElementById('toggleLabel');
+        dot.style.background=locationOn?'#7fff7f':'#888';
+        dot.style.animation=locationOn?'blink 1.6s infinite':'none';
+        lbl.textContent=locationOn?'On':'Off';
+        lbl.style.color=locationOn?'#7fff7f':'#888';
+        showToast(locationOn?'📍 Location sharing ON':'🚫 Location sharing OFF');
+        if(locationOn&&userPos) map.panTo(userPos);
       });
 
       // Vyb buttons
-      document.querySelectorAll('.vyb-btn').forEach(btn => {
-        btn.addEventListener('click', function() {
-          this.textContent = 'Vybing!';
-          this.style.background = '#2a7a2a';
+      document.querySelectorAll('.vyb-btn').forEach(btn=>{
+        btn.addEventListener('click',function(){
+          this.textContent='Vybing! 🤙';
+          this.style.background='#2a7a2a';
           showToast('🤙 Vybe sent!');
         });
       });
 
-    } catch(err) {
-      showError('Map Init Error', err.message, err.stack);
-    }
+    } catch(err){ showError('Map Init Error',err.message,err.stack); }
   };
 
-  function hideLoading() {
-    setTimeout(() => document.getElementById('loading').classList.add('hidden'), 700);
+  function hideLoading(){
+    setTimeout(()=>document.getElementById('loading').classList.add('hidden'),700);
   }
 
-  // ── Screen navigation ──
-  function showScreen(screen, navEl) {
-    // Update nav
-    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  function showScreen(screen,navEl){
+    document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
     navEl.classList.add('active');
-
-    // Hide all screens
-    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-
-    // Show map overlays or screen
-    const mapOverlays = ['.search-bar', '.location-toggle', '.venue-card', '.action-btns'];
-    if (screen === 'map') {
-      mapOverlays.forEach(s => document.querySelector(s).style.display = '');
+    document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+    const mapOverlays=['.search-bar','.location-toggle','.venue-card','.action-btns','.music-notes'];
+    if(screen==='map'){
+      mapOverlays.forEach(s=>{ const el=document.querySelector(s); if(el) el.style.display=''; });
     } else {
-      mapOverlays.forEach(s => document.querySelector(s).style.display = 'none');
-      const screenEl = document.getElementById(screen + 'Screen');
-      if (screenEl) screenEl.classList.add('active');
+      mapOverlays.forEach(s=>{ const el=document.querySelector(s); if(el) el.style.display='none'; });
+      const el=document.getElementById(screen+'Screen');
+      if(el) el.classList.add('active');
     }
   }
 </script>
 
+<!-- Google Maps + Places API -->
 <script
-  src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBtY48sfGK5Fvnh7ysIciqmRos_-qC9XkU&callback=initMap&loading=async"
-  onerror="showError('Failed to Load Maps', 'Could not reach Google Maps servers.', 'Check internet connection')"
+  src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBtY48sfGK5Fvnh7ysIciqmRos_-qC9XkU&libraries=places&callback=initMap&loading=async"
+  onerror="showError('Failed to Load Maps','Could not reach Google Maps servers.','Check internet connection')"
   async defer>
 </script>
 
