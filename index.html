@@ -14,7 +14,7 @@
   --purple-light: #C8A8FF;
   --purple-dim:   rgba(180,140,255,0.18);
   --nav-bg:       #1a0535;
-  --nav-h:        90px;
+  --nav-h:        80px;
   --dark:         #080810;
 }
 
@@ -32,6 +32,8 @@ html, body {
   display: flex;
   flex-direction: column;
   background: var(--dark);
+  /* Respect safe areas on notched phones */
+  padding-bottom: env(safe-area-inset-bottom, 0px);
 }
 
 /* ── MAP ── */
@@ -45,7 +47,7 @@ html, body {
 /* ── SEARCH BAR ── */
 .search-bar {
   position: absolute;
-  top: 18px; left: 14px; right: 14px;
+  top: 16px; left: 14px; right: 14px;
   z-index: 50;
   display: flex; align-items: center; gap: 10px;
 }
@@ -57,7 +59,7 @@ html, body {
   background: rgba(195,165,255,0.22);
   border: 2px solid rgba(195,165,255,0.5);
   border-radius: 32px;
-  padding: 13px 48px 13px 44px;
+  padding: 12px 48px 12px 44px;
   color: #e8d8ff;
   font-family: 'Nunito', sans-serif;
   font-size: 16px; font-weight: 700;
@@ -73,7 +75,7 @@ html, body {
 }
 .search-icon-left svg { width:20px; height:20px; }
 .filter-btn {
-  width: 48px; height: 48px;
+  width: 46px; height: 46px;
   background: rgba(195,165,255,0.22);
   border: 2px solid rgba(195,165,255,0.5);
   border-radius: 50%;
@@ -83,7 +85,7 @@ html, body {
   flex-shrink: 0;
 }
 
-/* Search autocomplete dropdown */
+/* Search autocomplete */
 .pac-container {
   background: rgba(20,5,50,0.97) !important;
   border: 1.5px solid var(--purple) !important;
@@ -102,9 +104,7 @@ html, body {
   font-size: 14px !important;
   cursor: pointer !important;
 }
-.pac-item:hover, .pac-item-selected {
-  background: rgba(123,47,255,0.25) !important;
-}
+.pac-item:hover, .pac-item-selected { background: rgba(123,47,255,0.25) !important; }
 .pac-item-query { color: #fff !important; font-weight: 800 !important; }
 .pac-icon { display:none !important; }
 .pac-matched { color: var(--purple-light) !important; }
@@ -112,13 +112,13 @@ html, body {
 /* ── LOCATION TOGGLE ── */
 .location-toggle {
   position: absolute;
-  top: 80px; right: 14px;
+  top: 74px; right: 14px;
   z-index: 50;
   background: rgba(15,5,35,0.92);
   border: 2px solid rgba(195,165,255,0.4);
   border-radius: 24px;
-  padding: 7px 14px 7px 10px;
-  display: flex; align-items: center; gap: 7px;
+  padding: 6px 12px 6px 10px;
+  display: flex; align-items: center; gap: 6px;
   font-size: 14px; font-weight: 800;
   color: #7fff7f;
   backdrop-filter: blur(14px);
@@ -137,10 +137,10 @@ html, body {
 /* ── MUSIC NOTES ── */
 .music-notes {
   position: absolute;
-  bottom: calc(var(--nav-h) + 130px);
+  bottom: calc(var(--nav-h) + 118px);
   left: 50%; transform: translateX(-30%);
-  font-size: 26px;
-  opacity: 0.55;
+  font-size: 24px;
+  opacity: 0.6;
   z-index: 20;
   animation: floatUp 3s ease-in-out infinite;
   pointer-events: none;
@@ -153,16 +153,16 @@ html, body {
 /* ── VENUE CARD ── */
 .venue-card {
   position: absolute;
-  bottom: calc(var(--nav-h) + 14px);
+  bottom: calc(var(--nav-h) + 12px);
   left: 14px;
   z-index: 50;
   background: rgba(18,6,42,0.93);
   border: 2px solid rgba(160,100,255,0.55);
   border-radius: 22px;
-  padding: 13px 20px;
+  padding: 11px 18px;
   backdrop-filter: blur(16px);
   box-shadow: 0 0 28px rgba(123,47,255,0.3);
-  max-width: 230px;
+  max-width: 220px;
   animation: slideUp 0.5s cubic-bezier(0.34,1.56,0.64,1);
 }
 @keyframes slideUp {
@@ -182,8 +182,8 @@ html, body {
 }
 .venue-name {
   font-family: 'Bebas Neue', sans-serif;
-  font-size: 30px; letter-spacing: 1.5px; line-height: 1.05;
-  margin-top: 3px;
+  font-size: 28px; letter-spacing: 1.5px; line-height: 1.05;
+  margin-top: 2px;
   background: linear-gradient(90deg, #fff 40%, #c8a8ff 100%);
   -webkit-background-clip: text; -webkit-text-fill-color: transparent;
 }
@@ -191,16 +191,16 @@ html, body {
 /* ── ACTION BUTTONS ── */
 .action-btns {
   position: absolute;
-  bottom: calc(var(--nav-h) + 10px);
+  bottom: calc(var(--nav-h) + 8px);
   right: 14px;
   z-index: 50;
   display: flex; flex-direction: column;
-  gap: 10px; align-items: center;
+  gap: 8px; align-items: center;
 }
 
 /* Big V teardrop button */
 .btn-v {
-  width: 72px; height: 72px;
+  width: 68px; height: 68px;
   background: var(--purple);
   border: none; cursor: pointer;
   border-radius: 50% 50% 50% 0;
@@ -208,7 +208,6 @@ html, body {
   display: flex; align-items: center; justify-content: center;
   box-shadow: 0 6px 24px rgba(123,47,255,0.6);
   transition: transform 0.15s, box-shadow 0.15s;
-  position: relative;
 }
 .btn-v:active { box-shadow: 0 2px 10px rgba(123,47,255,0.4); }
 .btn-v-inner {
@@ -218,18 +217,17 @@ html, body {
 }
 .btn-v-inner .v-letter {
   font-family: 'Bebas Neue', sans-serif;
-  font-size: 32px; color: white; letter-spacing: -1px;
-  line-height: 1;
+  font-size: 30px; color: white; letter-spacing: -1px; line-height: 1;
 }
 .btn-v-inner .v-plus {
   position: absolute; top: -6px; right: -10px;
-  font-size: 16px; font-weight: 900; color: white;
+  font-size: 15px; font-weight: 900; color: white;
   font-family: 'Nunito', sans-serif;
 }
 
-/* Send button - speech bubble arrow */
+/* Send button */
 .btn-send {
-  width: 52px; height: 52px;
+  width: 50px; height: 50px;
   background: rgba(123,47,255,0.55);
   border: 2px solid rgba(195,165,255,0.4);
   border-radius: 50% 50% 50% 0;
@@ -237,7 +235,7 @@ html, body {
   display: flex; align-items: center; justify-content: center;
   cursor: pointer;
   box-shadow: 0 4px 16px rgba(0,0,0,0.4);
-  transition: transform 0.15s;
+  transition: opacity 0.15s;
 }
 .btn-send:active { opacity: 0.7; }
 .btn-send svg { transform: rotate(45deg); }
@@ -251,30 +249,22 @@ html, body {
   display: flex;
   flex-shrink: 0;
   z-index: 60;
-  position: relative;
+  /* Push above home indicator on iOS */
+  padding-bottom: env(safe-area-inset-bottom, 0px);
 }
 
 .nav-item {
   flex: 1;
   display: flex; flex-direction: column;
   align-items: center; justify-content: center;
-  gap: 4px; cursor: pointer;
+  gap: 3px; cursor: pointer;
   position: relative;
   transition: background 0.2s;
-  padding: 8px 0 12px;
+  padding: 6px 0 8px;
   border-right: 1.5px solid rgba(123,47,255,0.25);
 }
 .nav-item:last-child { border-right: none; }
 
-/* MAP tab — lighter outline style (inactive look from screenshot) */
-.nav-item.nav-map {
-  background: transparent;
-}
-.nav-item.nav-map.active {
-  background: rgba(123,47,255,0.15);
-}
-
-/* Other tabs — solid purple when active */
 .nav-item.active {
   background: var(--purple);
 }
@@ -285,18 +275,25 @@ html, body {
   background: var(--purple-light);
 }
 
+/* MAP tab stays transparent when active (outline style like screenshot) */
+.nav-item.nav-map.active {
+  background: transparent;
+}
+.nav-item.nav-map.active::before {
+  display: none;
+}
+
 .nav-icon-wrap {
-  width: 36px; height: 36px;
+  width: 34px; height: 34px;
   display: flex; align-items: center; justify-content: center;
 }
 
 .nav-label {
   font-family: 'Bebas Neue', sans-serif;
-  font-size: 15px; color: #fff; letter-spacing: 1.5px;
+  font-size: 14px; color: #fff; letter-spacing: 1.5px;
 }
 
-/* MAP icon — dotted circle with pin */
-.map-icon-svg { width:34px; height:34px; }
+.map-icon-svg { width:32px; height:32px; }
 
 /* ── SCREENS ── */
 .screen {
@@ -315,7 +312,7 @@ html, body {
 
 .screen-title {
   font-family: 'Bebas Neue', sans-serif;
-  font-size: 38px; letter-spacing: 2px;
+  font-size: 36px; letter-spacing: 2px;
   background: linear-gradient(90deg, #fff, var(--purple-light));
   -webkit-background-clip: text; -webkit-text-fill-color: transparent;
   margin-top: 8px;
@@ -331,16 +328,13 @@ html, body {
 }
 .venue-row:active { border-color: var(--purple); transform: scale(0.98); }
 .venue-row-icon {
-  width: 54px; height: 54px; border-radius: 50%;
+  width: 52px; height: 52px; border-radius: 50%;
   background: var(--purple);
   display: flex; align-items: center; justify-content: center;
-  font-size: 26px; flex-shrink: 0;
+  font-size: 24px; flex-shrink: 0;
 }
 .venue-row-info { flex: 1; }
-.venue-row-name {
-  font-family: 'Bebas Neue', sans-serif;
-  font-size: 21px; color: #fff; letter-spacing: 1px;
-}
+.venue-row-name { font-family: 'Bebas Neue', sans-serif; font-size: 20px; color: #fff; letter-spacing: 1px; }
 .venue-row-sub { font-size: 12px; color: var(--purple-light); font-weight: 600; margin-top: 2px; }
 .venue-row-count {
   background: #ff3a3a; color: white;
@@ -359,10 +353,10 @@ html, body {
 }
 .user-row:active { border-color: var(--purple); }
 .user-avatar {
-  width: 50px; height: 50px; border-radius: 50%;
+  width: 48px; height: 48px; border-radius: 50%;
   background: linear-gradient(135deg, var(--purple), var(--purple-mid));
   display: flex; align-items: center; justify-content: center;
-  font-size: 24px; flex-shrink: 0;
+  font-size: 22px; flex-shrink: 0;
   border: 2px solid rgba(200,168,255,0.35);
 }
 .user-info { flex: 1; }
@@ -375,7 +369,6 @@ html, body {
   font-family: 'Nunito', sans-serif; font-size: 13px; font-weight: 900;
   cursor: pointer; transition: background 0.2s;
 }
-.vyb-btn:active { background: #2a7a2a; }
 
 /* PROFILE */
 .profile-header {
@@ -383,17 +376,14 @@ html, body {
   gap: 10px; padding: 16px 0 8px;
 }
 .profile-avatar {
-  width: 92px; height: 92px; border-radius: 50%;
+  width: 90px; height: 90px; border-radius: 50%;
   background: linear-gradient(135deg, var(--purple), var(--purple-mid));
   display: flex; align-items: center; justify-content: center;
-  font-size: 44px;
+  font-size: 42px;
   border: 3px solid var(--purple-light);
   box-shadow: 0 0 32px rgba(123,47,255,0.55);
 }
-.profile-name {
-  font-family: 'Bebas Neue', sans-serif;
-  font-size: 34px; color: #fff; letter-spacing: 2px;
-}
+.profile-name { font-family: 'Bebas Neue', sans-serif; font-size: 32px; color: #fff; letter-spacing: 2px; }
 .profile-handle { color: var(--purple-light); font-size: 14px; font-weight: 700; }
 .profile-stats {
   display: flex;
@@ -401,20 +391,11 @@ html, body {
   border: 1.5px solid rgba(123,47,255,0.3);
   border-radius: 18px; overflow: hidden;
 }
-.stat {
-  flex: 1; padding: 14px 0; text-align: center;
-  border-right: 1px solid rgba(123,47,255,0.2);
-}
+.stat { flex: 1; padding: 14px 0; text-align: center; border-right: 1px solid rgba(123,47,255,0.2); }
 .stat:last-child { border-right: none; }
-.stat-val {
-  font-family: 'Bebas Neue', sans-serif;
-  font-size: 28px; color: #fff;
-}
+.stat-val { font-family: 'Bebas Neue', sans-serif; font-size: 28px; color: #fff; }
 .stat-lbl { font-size: 10px; color: var(--purple-light); font-weight: 800; letter-spacing: 1px; text-transform: uppercase; }
-.section-title {
-  font-family: 'Bebas Neue', sans-serif;
-  font-size: 20px; color: var(--purple-light); letter-spacing: 2px; margin-top: 6px;
-}
+.section-title { font-family: 'Bebas Neue', sans-serif; font-size: 20px; color: var(--purple-light); letter-spacing: 2px; margin-top: 6px; }
 .vibe-tags { display: flex; flex-wrap: wrap; gap: 8px; }
 .vibe-tag {
   background: rgba(123,47,255,0.25);
@@ -437,10 +418,7 @@ html, body {
   -webkit-background-clip: text; -webkit-text-fill-color: transparent;
   letter-spacing: 5px;
 }
-.loader-sub {
-  color: var(--purple-light); font-size: 13px; font-weight: 700;
-  letter-spacing: 2px; text-transform: uppercase; opacity: 0.7;
-}
+.loader-sub { color: var(--purple-light); font-size: 13px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; opacity: 0.7; }
 .loader-spinner {
   width: 40px; height: 40px;
   border: 3px solid rgba(123,47,255,0.2);
@@ -451,8 +429,7 @@ html, body {
 
 /* ── ERROR ── */
 #errorPanel {
-  display: none; position: absolute; inset: 0;
-  background: var(--dark);
+  display: none; position: absolute; inset: 0; background: var(--dark);
   flex-direction: column; align-items: center; justify-content: center;
   z-index: 400; gap: 14px; padding: 32px; text-align: center;
 }
@@ -466,7 +443,7 @@ html, body {
 /* ── TOAST ── */
 .toast {
   position: fixed;
-  bottom: calc(var(--nav-h) + 18px); left: 50%;
+  bottom: calc(var(--nav-h) + 16px); left: 50%;
   transform: translateX(-50%);
   background: rgba(18,5,45,0.97);
   border: 1.5px solid var(--purple);
@@ -541,14 +518,12 @@ html, body {
 
   <!-- ACTION BUTTONS -->
   <div class="action-btns">
-    <!-- V teardrop button -->
     <button class="btn-v" id="vybBtn" aria-label="Center map">
       <div class="btn-v-inner">
         <span class="v-letter">V</span>
         <span class="v-plus">+</span>
       </div>
     </button>
-    <!-- Send button -->
     <button class="btn-send" aria-label="Send location">
       <svg width="22" height="22" viewBox="0 0 24 24" fill="white">
         <path d="M2 12L22 2L14 22L11 13L2 12Z"/>
@@ -611,9 +586,7 @@ html, body {
     <div class="nav-item nav-map active" id="nav-map" onclick="showScreen('map',this)">
       <div class="nav-icon-wrap">
         <svg class="map-icon-svg" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <!-- dotted circle -->
           <circle cx="20" cy="22" r="10" stroke="rgba(200,168,255,0.7)" stroke-width="1.8" stroke-dasharray="3 2.5"/>
-          <!-- pin -->
           <circle cx="20" cy="14" r="5" fill="rgba(200,168,255,0.85)"/>
           <path d="M20 19 L20 24" stroke="rgba(200,168,255,0.85)" stroke-width="2" stroke-linecap="round"/>
         </svg>
@@ -624,7 +597,6 @@ html, body {
     <!-- DISCOVER -->
     <div class="nav-item" id="nav-discover" onclick="showScreen('discover',this)">
       <div class="nav-icon-wrap">
-        <!-- telescope SVG -->
         <svg width="34" height="34" viewBox="0 0 34 34" fill="none">
           <line x1="17" y1="20" x2="17" y2="30" stroke="white" stroke-width="2" stroke-linecap="round"/>
           <line x1="13" y1="30" x2="21" y2="30" stroke="white" stroke-width="2" stroke-linecap="round"/>
@@ -638,7 +610,6 @@ html, body {
     <!-- VYBERZ -->
     <div class="nav-item" id="nav-vyberz" onclick="showScreen('vyberz',this)">
       <div class="nav-icon-wrap">
-        <!-- people SVG -->
         <svg width="36" height="30" viewBox="0 0 36 30" fill="none">
           <circle cx="11" cy="8" r="5" fill="white" opacity="0.9"/>
           <circle cx="25" cy="8" r="5" fill="white" opacity="0.9"/>
@@ -652,7 +623,6 @@ html, body {
     <!-- PROFILE -->
     <div class="nav-item" id="nav-profile" onclick="showScreen('profile',this)">
       <div class="nav-icon-wrap">
-        <!-- person SVG -->
         <svg width="28" height="32" viewBox="0 0 28 32" fill="none">
           <circle cx="14" cy="9" r="7" fill="white" opacity="0.9"/>
           <path d="M2 30 C2 21 6 18 14 18 C22 18 26 21 26 30" stroke="white" stroke-width="2.5" stroke-linecap="round" fill="none"/>
@@ -662,10 +632,9 @@ html, body {
     </div>
 
   </div>
-</div><!-- end app -->
+</div>
 
 <script>
-  // ── Error guards ──
   window.gm_authFailure = function() {
     showError('API Key Error','Maps API key not authorized.','Enable Maps JavaScript API & link billing in Google Cloud Console');
   };
@@ -681,7 +650,6 @@ html, body {
     document.getElementById('errorPanel').classList.add('show');
   }
 
-  // ── Dark map style ──
   const DARK_STYLE = [
     {elementType:"geometry",stylers:[{color:"#0d0d1a"}]},
     {elementType:"labels.text.fill",stylers:[{color:"#2a2a60"}]},
@@ -700,14 +668,14 @@ html, body {
   ];
 
   const SAMPLE_USERS = [
-    {emoji:"🤙",count:null, color:"#5b1fbb",offset:{lat:0.004, lng:0.003}, name:"Shaka Crew", vibe:"Chilling at the rooftop"},
-    {emoji:"💀",count:null, color:"#3a1a7a",offset:{lat:0.006, lng:-0.004},name:"Night Owls",  vibe:"Late night sessions"},
-    {emoji:"🌿",count:22,   color:"#2a7a2a",offset:{lat:-0.003,lng:0.005}, name:"Green Vibes",vibe:"22 people vibing"},
-    {emoji:"🔥",count:55,   color:"#8a3500",offset:{lat:0.002, lng:0.007}, name:"Fire Squad", vibe:"55 in the building 🔥"},
-    {emoji:"🥂",count:89,   color:"#5a3010",offset:{lat:-0.005,lng:-0.002},name:"Toast Gang", vibe:"89 celebrating tonight"},
-    {emoji:"💀",count:null, color:"#3a1a7a",offset:{lat:0.001, lng:-0.007},name:"Dark Ones",  vibe:"Secret gathering"},
-    {emoji:"🤙",count:80,   color:"#5b1fbb",offset:{lat:-0.007,lng:0.006}, name:"Chill Spot", vibe:"80 Vyberz here"},
-    {emoji:"🔥",count:37,   color:"#cc4400",offset:{lat:-0.002,lng:-0.005},name:"Hot Zone",   vibe:"37 and climbing!"},
+    {emoji:"🤙",count:null,color:"#5b1fbb",offset:{lat:0.004,lng:0.003},name:"Shaka Crew",vibe:"Chilling at the rooftop"},
+    {emoji:"💀",count:null,color:"#3a1a7a",offset:{lat:0.006,lng:-0.004},name:"Night Owls",vibe:"Late night sessions"},
+    {emoji:"🌿",count:22,color:"#2a7a2a",offset:{lat:-0.003,lng:0.005},name:"Green Vibes",vibe:"22 people vibing"},
+    {emoji:"🔥",count:55,color:"#8a3500",offset:{lat:0.002,lng:0.007},name:"Fire Squad",vibe:"55 in the building 🔥"},
+    {emoji:"🥂",count:89,color:"#5a3010",offset:{lat:-0.005,lng:-0.002},name:"Toast Gang",vibe:"89 celebrating tonight"},
+    {emoji:"💀",count:null,color:"#3a1a7a",offset:{lat:0.001,lng:-0.007},name:"Dark Ones",vibe:"Secret gathering"},
+    {emoji:"🤙",count:80,color:"#5b1fbb",offset:{lat:-0.007,lng:0.006},name:"Chill Spot",vibe:"80 Vyberz here"},
+    {emoji:"🔥",count:37,color:"#cc4400",offset:{lat:-0.002,lng:-0.005},name:"Hot Zone",vibe:"37 and climbing!"},
   ];
 
   let map, geocoder, autocomplete, userMarker, locationOn=true, userPos=null;
@@ -776,7 +744,6 @@ html, body {
     try {
       geocoder=new google.maps.Geocoder();
       const def={lat:-1.2921,lng:36.8219};
-
       map=new google.maps.Map(document.getElementById('map'),{
         center:def,zoom:15,
         styles:DARK_STYLE,
@@ -784,8 +751,6 @@ html, body {
         gestureHandling:'greedy',
         clickableIcons:false,
       });
-
-      // ── Places Autocomplete on search bar ──
       autocomplete=new google.maps.places.Autocomplete(
         document.getElementById('searchInput'),
         {fields:['geometry','name','formatted_address']}
@@ -793,14 +758,11 @@ html, body {
       autocomplete.bindTo('bounds',map);
       autocomplete.addListener('place_changed',()=>{
         const place=autocomplete.getPlace();
-        if(!place.geometry||!place.geometry.location) {
-          showToast('❌ Place not found'); return;
-        }
+        if(!place.geometry||!place.geometry.location){showToast('❌ Place not found');return;}
         map.setCenter(place.geometry.location);
         map.setZoom(16);
         document.getElementById('venueName').textContent=place.name||place.formatted_address;
         showToast(`📍 ${place.name||place.formatted_address}`);
-        // Drop a highlight marker
         new google.maps.Marker({
           position:place.geometry.location,map,
           icon:{url:makePinSVG('📍','#7B2FFF',null),
@@ -808,9 +770,7 @@ html, body {
           title:place.name,animation:google.maps.Animation.DROP,
         });
       });
-
       document.getElementById('loadingMsg').textContent='Finding your location...';
-
       if(navigator.geolocation){
         navigator.geolocation.getCurrentPosition(
           pos=>{
@@ -830,13 +790,9 @@ html, body {
       } else {
         userPos=def; placeMarkers(userPos.lat,userPos.lng); hideLoading();
       }
-
-      // V button = re-center
       document.getElementById('vybBtn').addEventListener('click',()=>{
         if(userPos){map.panTo(userPos);map.setZoom(15);showToast('📍 Centered on you');}
       });
-
-      // Location toggle
       document.getElementById('locToggle').addEventListener('click',()=>{
         locationOn=!locationOn;
         const dot=document.getElementById('toggleDot');
@@ -848,8 +804,6 @@ html, body {
         showToast(locationOn?'📍 Location sharing ON':'🚫 Location sharing OFF');
         if(locationOn&&userPos) map.panTo(userPos);
       });
-
-      // Vyb buttons
       document.querySelectorAll('.vyb-btn').forEach(btn=>{
         btn.addEventListener('click',function(){
           this.textContent='Vybing! 🤙';
@@ -857,7 +811,6 @@ html, body {
           showToast('🤙 Vybe sent!');
         });
       });
-
     } catch(err){ showError('Map Init Error',err.message,err.stack); }
   };
 
@@ -871,16 +824,15 @@ html, body {
     document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
     const mapOverlays=['.search-bar','.location-toggle','.venue-card','.action-btns','.music-notes'];
     if(screen==='map'){
-      mapOverlays.forEach(s=>{ const el=document.querySelector(s); if(el) el.style.display=''; });
+      mapOverlays.forEach(s=>{const el=document.querySelector(s);if(el)el.style.display='';});
     } else {
-      mapOverlays.forEach(s=>{ const el=document.querySelector(s); if(el) el.style.display='none'; });
+      mapOverlays.forEach(s=>{const el=document.querySelector(s);if(el)el.style.display='none';});
       const el=document.getElementById(screen+'Screen');
       if(el) el.classList.add('active');
     }
   }
 </script>
 
-<!-- Google Maps + Places API -->
 <script
   src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBtY48sfGK5Fvnh7ysIciqmRos_-qC9XkU&libraries=places&callback=initMap&loading=async"
   onerror="showError('Failed to Load Maps','Could not reach Google Maps servers.','Check internet connection')"
