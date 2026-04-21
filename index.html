@@ -536,4 +536,25 @@
       });
 
     } catch(err) {
-      showError('Map Init Error', err.message, er
+      showError('Map Init Error', err.message, err.stack);
+    }
+  };
+
+  function hideLoading() {
+    setTimeout(() => document.getElementById('loading').classList.add('hidden'), 700);
+  }
+
+  function setActive(el) {
+    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+    el.classList.add('active');
+  }
+</script>
+
+<script
+  src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBtY48sfGK5Fvnh7ysIciqmRos_-qC9XkU&callback=initMap&loading=async"
+  onerror="showError('Failed to Load Maps Script', 'Could not reach Google Maps servers. Check your internet connection.', 'maps.googleapis.com unreachable')"
+  async defer>
+</script>
+
+</body>
+</html>
